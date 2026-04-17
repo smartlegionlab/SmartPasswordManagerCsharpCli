@@ -225,7 +225,7 @@ dotnet build SmartPasswordManagerCsharpCli/
 dotnet publish -c Release -o C:\publish-win\SmartPasswordManagerCsharpCli -p:AssemblyName=SmartPasswordManagerCsharpCli-win-x64 -r win-x64 --self-contained true
 
 # Linux  
-dotnet publish -c Release -o ~/.publish-linux -p:AssemblyName=SmartPasswordManagerCsharpCli-linux-x64 -r linux-x64 --self-contained true
+dotnet publish -c Release -o ~/.publish-linux/SmartPasswordManagerCsharpCli -p:AssemblyName=SmartPasswordManagerCsharpCli-linux-x64 -r linux-x64 --self-contained true
 
 ```
 
