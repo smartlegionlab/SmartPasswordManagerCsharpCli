@@ -1,5 +1,5 @@
 /**
- * SmartPasswordLib v1.0.1 - C# smart password generator
+ * SmartPasswordLib v1.0.3 - C# smart password generator
  * Cross-platform deterministic password generation
  * Same secret + same length = same password across all platforms
  *
@@ -9,7 +9,7 @@
  * - Private key: 30 iterations of SHA-256 (used for password generation)
  * - Public key: 60 iterations of SHA-256 (used for verification, stored on server)
  *
- * Part of Smart Password Suite:
+ * Ecosystem:
  * - Core library (Python): https://github.com/smartlegionlab/smartpasslib
  * - Core library (JS): https://github.com/smartlegionlab/smartpasslib-js
  * - Core library (Kotlin): https://github.com/smartlegionlab/smartpasslib-kotlin
@@ -51,7 +51,7 @@ namespace SmartLegionLab.SmartPasswordLib
         /// <summary>
         /// Library version
         /// </summary>
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.3";
 
         /// <summary>
         /// Character set for password generation
@@ -198,8 +198,8 @@ namespace SmartLegionLab.SmartPasswordLib
         /// </summary>
         public SmartPassword(string publicKey, string description, int length = 12)
         {
-            PublicKey = publicKey;
-            Description = description;
+            PublicKey = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
+            Description = description ?? throw new ArgumentNullException(nameof(description));
             Length = length;
         }
 
@@ -218,9 +218,12 @@ namespace SmartLegionLab.SmartPasswordLib
         /// </summary>
         public static SmartPassword FromDict(Dictionary<string, object> data)
         {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
             return new SmartPassword(
-                publicKey: data["public_key"].ToString(),
-                description: data["description"].ToString(),
+                publicKey: data["public_key"]?.ToString() ?? throw new ArgumentException("public_key is required"),
+                description: data["description"]?.ToString() ?? throw new ArgumentException("description is required"),
                 length: Convert.ToInt32(data["length"])
             );
         }
@@ -241,7 +244,7 @@ namespace SmartLegionLab.SmartPasswordLib
         /// <summary>
         /// Initialize manager with storage file
         /// </summary>
-        public SmartPasswordManager(string filename = null)
+        public SmartPasswordManager(string? filename = null)
         {
             if (string.IsNullOrEmpty(filename))
             {
@@ -269,20 +272,29 @@ namespace SmartLegionLab.SmartPasswordLib
         /// <summary>Add smart password metadata to storage</summary>
         public void AddSmartPassword(SmartPassword smartPassword)
         {
+            if (smartPassword == null)
+                throw new ArgumentNullException(nameof(smartPassword));
+
             _passwords[smartPassword.PublicKey] = smartPassword;
             WriteData();
         }
 
         /// <summary>Retrieve smart password metadata by public key</summary>
-        public SmartPassword GetSmartPassword(string publicKey)
+        public SmartPassword? GetSmartPassword(string publicKey)
         {
+            if (string.IsNullOrEmpty(publicKey))
+                return null;
+
             _passwords.TryGetValue(publicKey, out var result);
             return result;
         }
 
         /// <summary>Update metadata of an existing smart password</summary>
-        public bool UpdateSmartPassword(string publicKey, string description = null, int? length = null)
+        public bool UpdateSmartPassword(string publicKey, string? description = null, int? length = null)
         {
+            if (string.IsNullOrEmpty(publicKey))
+                return false;
+
             if (!_passwords.TryGetValue(publicKey, out var password))
                 return false;
 
@@ -295,6 +307,9 @@ namespace SmartLegionLab.SmartPasswordLib
         /// <summary>Delete smart password metadata by public key</summary>
         public bool DeleteSmartPassword(string publicKey)
         {
+            if (string.IsNullOrEmpty(publicKey))
+                return false;
+
             if (_passwords.Remove(publicKey))
             {
                 WriteData();
@@ -329,6 +344,9 @@ namespace SmartLegionLab.SmartPasswordLib
                     var publicKey = kv.Value.GetProperty("public_key").GetString();
                     var description = kv.Value.GetProperty("description").GetString();
                     var length = kv.Value.GetProperty("length").GetInt32();
+
+                    if (publicKey == null || description == null)
+                        continue;
 
                     var sp = new SmartPassword(publicKey, description, length);
                     result[kv.Key] = sp;

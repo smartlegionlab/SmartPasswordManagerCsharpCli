@@ -395,7 +395,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText("Version v1.0.0");
+        CenterText("Version v1.0.1");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
         Console.WriteLine("DESCRIPTION:");
@@ -439,7 +439,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v1.0.0");
+        CenterText($"Version: v1.0.1");
         CenterText($"Storage: {manager.FilePath}");
         CenterText($"Total smart passwords: {manager.PasswordCount}");
         Console.WriteLine(new string('=', width));
@@ -465,7 +465,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v1.0.0");
+        CenterText($"Version: v1.0.1");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
         CenterText("https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli");
