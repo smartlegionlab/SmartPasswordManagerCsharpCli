@@ -1,4 +1,4 @@
-# Smart Password Manager CLI (C#) <sup>v1.0.1</sup>
+# Smart Password Manager CLI (C#) <sup>v1.0.2</sup>
 
 **Terminal-based smart password manager with deterministic password generation. Generate, manage, and retrieve passwords without storing them - all from your command line. Your secret phrase never leaves your device.**
 
@@ -113,7 +113,7 @@ SmartPasswordManagerCsharpCli-win-x64.exe
 ```
 ================================================================================
                            SMART PASSWORD MANAGER CLI
-                                Version: v1.0.1
+                                Version: v1.0.2
      Storage: /home/user/.config/smart_password_manager/passwords.json
                             Total smart passwords: 0
 ================================================================================
