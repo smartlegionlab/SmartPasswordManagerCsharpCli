@@ -5,8 +5,8 @@ namespace SmartPasswordManagerCsharpCli;
 
 class Program
 {
-    private static SmartPasswordManager manager;
-    private static string exportDir;
+    private static SmartPasswordManager? manager;
+    private static string? exportDir;
 
     static void Main(string[] args)
     {
@@ -28,6 +28,12 @@ class Program
 
     static void CommandMode(string[] args)
     {
+        if (args == null || args.Length == 0 || string.IsNullOrEmpty(args[0]))
+        {
+            Console.WriteLine("ERROR: No command specified");
+            return;
+        }
+
         switch (args[0].ToLower())
         {
             case "add":
@@ -36,7 +42,7 @@ class Program
                     Console.WriteLine("ERROR: Usage: spm add <description> <length> <secret>");
                     return;
                 }
-                AddPassword(args[1], args[2], args[3]);
+                AddPassword(args[1] ?? string.Empty, args[2] ?? string.Empty, args[3] ?? string.Empty);
                 break;
             case "list":
                 ListPasswords();
@@ -47,7 +53,7 @@ class Program
                     Console.WriteLine("ERROR: Usage: spm get <index>");
                     return;
                 }
-                GetPassword(args[1]);
+                GetPassword(args[1] ?? string.Empty);
                 break;
             case "delete":
                 if (args.Length < 2)
@@ -55,7 +61,7 @@ class Program
                     Console.WriteLine("ERROR: Usage: spm delete <index>");
                     return;
                 }
-                DeletePassword(args[1]);
+                DeletePassword(args[1] ?? string.Empty);
                 break;
             case "export":
                 ExportToFile();
@@ -66,7 +72,7 @@ class Program
                     Console.WriteLine("ERROR: Usage: spm import <filepath>");
                     return;
                 }
-                ImportFromFile(args[1]);
+                ImportFromFile(args[1] ?? string.Empty);
                 break;
             case "help":
                 ShowHelp();
@@ -125,12 +131,19 @@ class Program
 
     static bool IsSecretExists(string secret)
     {
+        if (manager == null) return false;
         string publicKeyToCheck = SmartPasswordGenerator.GeneratePublicKey(secret);
         return manager.GetSmartPassword(publicKeyToCheck) != null;
     }
 
     static void AddPassword(string description, string lengthStr, string secret)
     {
+        if (manager == null)
+        {
+            Console.WriteLine("ERROR: Manager not initialized");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(description))
         {
             Console.WriteLine("ERROR: Description cannot be empty");
@@ -143,7 +156,7 @@ class Program
             return;
         }
 
-        if (secret.Length < 12)
+        if (string.IsNullOrEmpty(secret) || secret.Length < 12)
         {
             Console.WriteLine("ERROR: Secret must be at least 12 characters");
             return;
@@ -174,6 +187,12 @@ class Program
 
     static void ListPasswords()
     {
+        if (manager == null)
+        {
+            Console.WriteLine("ERROR: Manager not initialized");
+            return;
+        }
+
         if (manager.PasswordCount == 0)
         {
             Console.WriteLine("No saved smart passwords found");
@@ -190,6 +209,12 @@ class Program
 
     static void GetPassword(string indexStr)
     {
+        if (manager == null)
+        {
+            Console.WriteLine("ERROR: Manager not initialized");
+            return;
+        }
+
         if (!int.TryParse(indexStr, out int index) || index < 1)
         {
             Console.WriteLine("ERROR: Invalid index");
@@ -212,6 +237,12 @@ class Program
 
         try
         {
+            if (string.IsNullOrEmpty(secret))
+            {
+                Console.WriteLine("\nERROR: Secret cannot be empty");
+                return;
+            }
+
             if (!SmartPasswordGenerator.VerifySecret(secret, sp.Key))
             {
                 Console.WriteLine("\nERROR: Invalid secret!");
@@ -229,6 +260,12 @@ class Program
 
     static void DeletePassword(string indexStr)
     {
+        if (manager == null)
+        {
+            Console.WriteLine("ERROR: Manager not initialized");
+            return;
+        }
+
         if (!int.TryParse(indexStr, out int index) || index < 1)
         {
             Console.WriteLine("ERROR: Invalid index");
@@ -255,6 +292,18 @@ class Program
 
     static void ExportToFile()
     {
+        if (manager == null)
+        {
+            Console.WriteLine("ERROR: Manager not initialized");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(exportDir))
+        {
+            Console.WriteLine("ERROR: Export directory not initialized");
+            return;
+        }
+
         string fileName = $"spm_export_{DateTime.Now:yyyyMMdd_HHmmss}.json";
         string fullPath = Path.Combine(exportDir, fileName);
 
@@ -289,6 +338,18 @@ class Program
 
     static void ImportFromFile(string filePath)
     {
+        if (manager == null)
+        {
+            Console.WriteLine("ERROR: Manager not initialized");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            Console.WriteLine("ERROR: File path cannot be empty");
+            return;
+        }
+
         if (!File.Exists(filePath))
         {
             Console.WriteLine($"ERROR: File not found: {filePath}");
@@ -319,8 +380,8 @@ class Program
 
                 try
                 {
-                    string publicKey = null;
-                    string description = null;
+                    string? publicKey = null;
+                    string? description = null;
                     int length = 12;
 
                     if (kv.Value.TryGetProperty("public_key", out var pk))
@@ -379,7 +440,7 @@ class Program
                 secret = secret.Substring(0, secret.Length - 1);
                 Console.Write("\b \b");
             }
-            else if (key.KeyChar != '\b')
+            else if (key.KeyChar != '\b' && !char.IsControl(key.KeyChar))
             {
                 secret += key.KeyChar;
             }
@@ -402,9 +463,18 @@ class Program
         Console.WriteLine("Deterministic password manager using SmartPasswordLib");
         Console.WriteLine("Same secret + same length = same password across all platforms");
         Console.WriteLine();
-        Console.WriteLine("STORAGE:");
-        Console.WriteLine($"Smart passwords: {manager.FilePath}");
-        Console.WriteLine($"Exports: {exportDir}");
+
+        if (manager != null)
+        {
+            Console.WriteLine($"STORAGE:");
+            Console.WriteLine($"Smart passwords: {manager.FilePath}");
+        }
+
+        if (!string.IsNullOrEmpty(exportDir))
+        {
+            Console.WriteLine($"Exports: {exportDir}");
+        }
+
         Console.WriteLine();
         Console.WriteLine("HOW IT WORKS:");
         Console.WriteLine("1. Add: provide secret phrase -> generates public key (stored)");
@@ -436,6 +506,8 @@ class Program
 
     static void DrawHeader()
     {
+        if (manager == null) return;
+
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
@@ -478,6 +550,13 @@ class Program
 
     static void AddPasswordInteractive()
     {
+        if (manager == null)
+        {
+            Console.WriteLine("\nERROR: Manager not initialized!");
+            Console.ReadKey();
+            return;
+        }
+
         Console.Clear();
         DrawHeader();
 
@@ -485,7 +564,7 @@ class Program
         Console.WriteLine();
 
         Console.Write(" Enter description: ");
-        string description = Console.ReadLine();
+        string? description = Console.ReadLine();
 
         if (string.IsNullOrWhiteSpace(description))
         {
@@ -495,7 +574,16 @@ class Program
         }
 
         Console.Write(" Enter password length (12-1000): ");
-        if (!int.TryParse(Console.ReadLine(), out int length) || length < 12 || length > 1000)
+        string? lengthInput = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(lengthInput))
+        {
+            Console.WriteLine("\nERROR: Length cannot be empty!");
+            Console.ReadKey();
+            return;
+        }
+
+        if (!int.TryParse(lengthInput, out int length) || length < 12 || length > 1000)
         {
             Console.WriteLine("\nERROR: Length must be between 12 and 1000!");
             Console.ReadKey();
@@ -505,7 +593,7 @@ class Program
         Console.Write(" Enter secret phrase (min 12 chars, input hidden): ");
         string secret = ReadSecret();
 
-        if (secret.Length < 12)
+        if (string.IsNullOrEmpty(secret) || secret.Length < 12)
         {
             Console.WriteLine("\nERROR: Secret must be at least 12 characters!");
             Console.ReadKey();
@@ -541,6 +629,13 @@ class Program
 
     static void GetPasswordInteractive()
     {
+        if (manager == null)
+        {
+            Console.WriteLine("\nERROR: Manager not initialized!");
+            Console.ReadKey();
+            return;
+        }
+
         Console.Clear();
         DrawHeader();
 
@@ -562,7 +657,16 @@ class Program
         }
 
         Console.Write("\nEnter number: ");
-        if (!int.TryParse(Console.ReadLine(), out int selected) || selected < 1 || selected > smartPasswords.Count)
+        string? selectedInput = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(selectedInput))
+        {
+            Console.WriteLine("\nERROR: Selection cannot be empty!");
+            Console.ReadKey();
+            return;
+        }
+
+        if (!int.TryParse(selectedInput, out int selected) || selected < 1 || selected > smartPasswords.Count)
         {
             Console.WriteLine("\nERROR: Invalid selection!");
             Console.ReadKey();
@@ -578,6 +682,13 @@ class Program
 
         try
         {
+            if (string.IsNullOrEmpty(secret))
+            {
+                Console.WriteLine("\nERROR: Secret cannot be empty!");
+                Console.ReadKey();
+                return;
+            }
+
             if (!SmartPasswordGenerator.VerifySecret(secret, selectedSP.Key))
             {
                 Console.WriteLine("\nERROR: Invalid secret!");
@@ -599,6 +710,13 @@ class Program
 
     static void ListPasswordsInteractive()
     {
+        if (manager == null)
+        {
+            Console.WriteLine("\nERROR: Manager not initialized!");
+            Console.ReadKey();
+            return;
+        }
+
         Console.Clear();
         DrawHeader();
 
@@ -615,7 +733,8 @@ class Program
             {
                 Console.WriteLine($" {index}. {sp.Value.Description}");
                 Console.WriteLine($"    Length: {sp.Value.Length}");
-                Console.WriteLine($"    Public Key: {sp.Key.Substring(0, Math.Min(16, sp.Key.Length))}...");
+                string shortKey = sp.Key.Length > 16 ? sp.Key.Substring(0, 16) + "..." : sp.Key;
+                Console.WriteLine($"    Public Key: {shortKey}");
                 Console.WriteLine();
                 index++;
             }
@@ -627,6 +746,13 @@ class Program
 
     static void DeletePasswordInteractive()
     {
+        if (manager == null)
+        {
+            Console.WriteLine("\nERROR: Manager not initialized!");
+            Console.ReadKey();
+            return;
+        }
+
         Console.Clear();
         DrawHeader();
 
@@ -648,7 +774,16 @@ class Program
         }
 
         Console.Write("\nEnter number: ");
-        if (!int.TryParse(Console.ReadLine(), out int selected) || selected < 1 || selected > smartPasswords.Count)
+        string? selectedInput = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(selectedInput))
+        {
+            Console.WriteLine("\nERROR: Selection cannot be empty!");
+            Console.ReadKey();
+            return;
+        }
+
+        if (!int.TryParse(selectedInput, out int selected) || selected < 1 || selected > smartPasswords.Count)
         {
             Console.WriteLine("\nERROR: Invalid selection!");
             Console.ReadKey();
@@ -660,7 +795,8 @@ class Program
         Console.WriteLine($"Length: {selectedSP.Value.Length}");
         Console.Write("Are you sure? (y/N): ");
 
-        if (Console.ReadLine()?.ToLower() == "y")
+        string? confirmation = Console.ReadLine();
+        if (confirmation != null && confirmation.ToLower() == "y")
         {
             if (manager.DeleteSmartPassword(selectedSP.Key))
             {
@@ -682,6 +818,13 @@ class Program
 
     static void ExportInteractive()
     {
+        if (manager == null)
+        {
+            Console.WriteLine("\nERROR: Manager not initialized!");
+            Console.ReadKey();
+            return;
+        }
+
         Console.Clear();
         DrawHeader();
 
@@ -701,12 +844,19 @@ class Program
 
     static void ImportInteractive()
     {
+        if (manager == null)
+        {
+            Console.WriteLine("\nERROR: Manager not initialized!");
+            Console.ReadKey();
+            return;
+        }
+
         Console.Clear();
         DrawHeader();
 
         Console.WriteLine(" IMPORT DATA\n");
         Console.Write(" Enter file path: ");
-        string filePath = Console.ReadLine();
+        string? filePath = Console.ReadLine();
 
         if (string.IsNullOrWhiteSpace(filePath))
         {
