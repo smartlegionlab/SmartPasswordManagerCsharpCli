@@ -1,6 +1,12 @@
-# Smart Password Manager CLI (C#) <sup>v1.0.2</sup>
+# Smart Password Manager CLI (C#) <sup>v1.0.3</sup>
+
+---
 
 **Terminal-based smart password manager with deterministic password generation. Generate, manage, and retrieve passwords without storing them - all from your command line. Your secret phrase never leaves your device.**
+
+**Decentralized by Design**: Unlike traditional password managers that store encrypted vaults on central servers, 
+Smart Password Manager stores nothing. Your secrets never leave your device. Passwords are regenerated on-demand — 
+**no cloud, no database, no trust required**.
 
 ---
 
@@ -24,14 +30,16 @@
 
 ## Core Principles
 
-- **Zero-Password Storage**: No passwords are ever stored or transmitted
+- **Zero-Storage Security**: No passwords or secret phrases are ever stored or transmitted
+- **Decentralized Architecture**: No central servers, no cloud dependency, no third-party trust required
 - **Deterministic Regeneration**: Passwords are recreated identically from your secret phrase
-- **Metadata Management**: Store only descriptions and verification keys
+- **Metadata Only**: Store only descriptions and verification keys
 - **Client-Side Generation**: All cryptographic operations happen on your device
 - **On-Demand Discovery**: Passwords exist only when you generate them
 
 ## Key Features
 
+- **Decentralized & Serverless**: No central database, no cloud lock-in, complete user sovereignty
 - **Smart Password Generation**: Deterministic from secret phrase
 - **Public/Private Key System**: 30 iterations for private key, 60 for public key
 - **Secret Verification**: Verify secret without exposing it
@@ -44,6 +52,7 @@
 ## Security Model
 
 - **Proof of Knowledge**: Public keys verify secrets without exposing them
+- **Decentralized Trust**: No third party needed — you control your secrets completely
 - **Deterministic Security**: Same secret + length = same password, always
 - **Metadata Separation**: Non-sensitive data stored in JSON file
 - **Local Processing**: Secret and password never leave your device
@@ -62,14 +71,20 @@
 
 Powered by **[smartpasslib-csharp](https://github.com/smartlegionlab/smartpasslib-csharp)** — C# implementation of deterministic password generation.
 
-**Key derivation (same as Python/JS/Kotlin/Go versions):**
+**Key derivation (same as Python/JS/Kotlin/Go/C# versions):**
 
 | Key Type    | Iterations | Purpose                                               |
 |-------------|------------|-------------------------------------------------------|
 | Private Key | 30         | Password generation (never stored, never transmitted) |
-| Public Key  | 60         | Verification (stored on server)                       |
+| Public Key  | 60         | Verification (stored locally)                         |
 
 **Character Set:** `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$&*-_`
+
+**Decentralized Architecture**:
+- No central authority required
+- Metadata can be synced via any channel
+- Your security depends only on your secret phrase
+- Works offline — no internet connection required
 
 ## Download
 
@@ -113,7 +128,7 @@ SmartPasswordManagerCsharpCli-win-x64.exe
 ```
 ================================================================================
                            SMART PASSWORD MANAGER CLI
-                                Version: v1.0.2
+                                Version: v1.0.3
      Storage: /home/user/.config/smart_password_manager/passwords.json
                             Total smart passwords: 0
 ================================================================================
@@ -135,7 +150,7 @@ Select option:
 
 ```bash
 # Add new password
-SmartPasswordManagerCsharpCli add "GitHub Account" 16 "MySecretPhrase123"
+SmartPasswordManagerCsharpCli add "GitHub Account" 16 "MyStrongSecretPhrase2026!"
 
 # List all passwords
 SmartPasswordManagerCsharpCli list
@@ -163,7 +178,7 @@ SmartPasswordManagerCsharpCli help
 | Linux    | `~/.config/smart_password_manager/passwords.json`             |
 | Windows  | `%USERPROFILE%\.config\smart_password_manager\passwords.json` |
 
-**Export files** are saved to `~/SmartPasswordManager/` with timestamp: `spm_export_20260117_143022.json`
+**Export files** are saved to `~/SmartPasswordManager/` with timestamp: `passwords_export_20260117_143022.json`
 
 ## Security Requirements
 
@@ -176,18 +191,29 @@ SmartPasswordManagerCsharpCli help
 
 ### Strong Secret Examples
 ```
-✅ "MyCatHippo2026"          — mixed case + numbers
-✅ "P@ssw0rd!LongSecret"     — special chars + numbers + length
-✅ "КотБегемот2026НаДиете"   — Cyrillic + numbers
+✅ "MyStrongSecretPhrase2026!"   — mixed case + numbers + symbols
+✅ "P@ssw0rd!LongSecret"         — special chars + numbers + length
+✅ "КотБегемот2026НаДиете"       — Cyrillic + numbers
 ```
 
 ### Weak Secret Examples (avoid)
 ```
-❌ "GitHub Account"          — using description as secret (weak!)
-❌ "password"                — dictionary word, too short
-❌ "1234567890"              — only digits, too short
-❌ "qwerty123"               — keyboard pattern
+❌ "GitHub Account"              — using description as secret (weak!)
+❌ "password"                    — dictionary word, too short
+❌ "1234567890"                  — only digits, too short
+❌ "qwerty123"                   — keyboard pattern
+❌ Same as description           — never use the same value as password description
 ```
+
+### Decentralized Nature
+
+**There is no "forgot password" button.** This is by design:
+
+- No central server can reset your passwords
+- No support team can recover your access
+- Your secret phrase is the ONLY key
+
+**This is the price of true decentralization** — you are completely in control.
 
 ## Cross-Platform Compatibility
 
@@ -220,13 +246,11 @@ dotnet run --project SmartPasswordManagerCsharpCli/
 dotnet build SmartPasswordManagerCsharpCli/
 
 # Publish single file
-
 # Windows
-dotnet publish -c Release -o C:\publish-win\SmartPasswordManagerCsharpCli -p:AssemblyName=SmartPasswordManagerCsharpCli-win-x64 -r win-x64 --self-contained true
+dotnet publish -c Release -o ./publish-win -p:AssemblyName=SmartPasswordManagerCsharpCli-win-x64 -r win-x64 --self-contained true
 
 # Linux  
-dotnet publish -c Release -o ~/.publish-linux/SmartPasswordManagerCsharpCli -p:AssemblyName=SmartPasswordManagerCsharpCli-linux-x64 -r linux-x64 --self-contained true
-
+dotnet publish -c Release -o ./publish-linux -p:AssemblyName=SmartPasswordManagerCsharpCli-linux-x64 -r linux-x64 --self-contained true
 ```
 
 ## Ecosystem
@@ -239,18 +263,18 @@ dotnet publish -c Release -o ~/.publish-linux/SmartPasswordManagerCsharpCli -p:A
 - **[smartpasslib-csharp](https://github.com/smartlegionlab/smartpasslib-csharp)** - C#
 
 **CLI Applications:**
-- **[CLI PassMan (Python)](https://github.com/smartlegionlab/clipassman)**
-- **[CLI PassGen (Python)](https://github.com/smartlegionlab/clipassgen)**
-- **[CLI Manager (C#)](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli)** (this)
-- **[CLI Generator (C#)](https://github.com/smartlegionlab/SmartPasswordGeneratorCsharpCli)**
+- **[CLI Smart Password Manager (Python)](https://github.com/smartlegionlab/clipassman)**
+- **[CLI Smart Password Generator (Python)](https://github.com/smartlegionlab/clipassgen)**
+- **[CLI Smart Password Manager (C#)](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli)** (this)
+- **[CLI Smart Password Generator (C#)](https://github.com/smartlegionlab/SmartPasswordGeneratorCsharpCli)**
 
 **Desktop Applications:**
-- **[Desktop Manager (Python)](https://github.com/smartlegionlab/smart-password-manager-desktop)**
-- **[Desktop Manager (C#)](https://github.com/smartlegionlab/SmartPasswordManagerCsharpDesktop)**
+- **[Desktop Smart Password Manager (Python)](https://github.com/smartlegionlab/smart-password-manager-desktop)**
+- **[Desktop Smart Password Manager (C#)](https://github.com/smartlegionlab/SmartPasswordManagerCsharpDesktop)**
 
 **Other:**
-- **[Web Manager](https://github.com/smartlegionlab/smart-password-manager-web)**
-- **[Android Manager](https://github.com/smartlegionlab/smart-password-manager-android)**
+- **[Web Smart Password Manager](https://github.com/smartlegionlab/smart-password-manager-web)**
+- **[Android Smart Password Manager](https://github.com/smartlegionlab/smart-password-manager-android)**
 
 ## License
 
@@ -268,6 +292,4 @@ Copyright (©) 2026, [Alexander Suvorov](https://github.com/smartlegionlab)
 
 - **Issues**: [GitHub Issues](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli/issues)
 - **Documentation**: This [README](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli/blob/master/README.md)
-
----
 

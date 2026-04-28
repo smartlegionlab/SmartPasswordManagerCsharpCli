@@ -1,4 +1,4 @@
-using SmartLegionLab.SmartPasswordLib;
+using SmartLegionLab.SmartPassLib;
 using System.Text.Json;
 
 namespace SmartPasswordManagerCsharpCli;
@@ -39,7 +39,7 @@ class Program
             case "add":
                 if (args.Length < 4)
                 {
-                    Console.WriteLine("ERROR: Usage: spm add <description> <length> <secret>");
+                    Console.WriteLine("ERROR: Usage: SmartPasswordManagerCsharpCli add <description> <length> <secret>");
                     return;
                 }
                 AddPassword(args[1] ?? string.Empty, args[2] ?? string.Empty, args[3] ?? string.Empty);
@@ -50,7 +50,7 @@ class Program
             case "get":
                 if (args.Length < 2)
                 {
-                    Console.WriteLine("ERROR: Usage: spm get <index>");
+                    Console.WriteLine("ERROR: Usage: SmartPasswordManagerCsharpCli get <index>");
                     return;
                 }
                 GetPassword(args[1] ?? string.Empty);
@@ -58,7 +58,7 @@ class Program
             case "delete":
                 if (args.Length < 2)
                 {
-                    Console.WriteLine("ERROR: Usage: spm delete <index>");
+                    Console.WriteLine("ERROR: Usage: SmartPasswordManagerCsharpCli delete <index>");
                     return;
                 }
                 DeletePassword(args[1] ?? string.Empty);
@@ -69,7 +69,7 @@ class Program
             case "import":
                 if (args.Length < 2)
                 {
-                    Console.WriteLine("ERROR: Usage: spm import <filepath>");
+                    Console.WriteLine("ERROR: Usage: SmartPasswordManagerCsharpCli import <filepath>");
                     return;
                 }
                 ImportFromFile(args[1] ?? string.Empty);
@@ -304,7 +304,7 @@ class Program
             return;
         }
 
-        string fileName = $"spm_export_{DateTime.Now:yyyyMMdd_HHmmss}.json";
+        string fileName = $"passwords_export_{DateTime.Now:yyyyMMdd_HHmmss}.json";
         string fullPath = Path.Combine(exportDir, fileName);
 
         try
@@ -456,17 +456,25 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText("Version v1.0.2");
+        CenterText("Version v1.0.3");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
+
+        Console.WriteLine("DECENTRALIZED BY DESIGN:");
+        Console.WriteLine("• No cloud, no database, no trust required");
+        Console.WriteLine("• Your secrets never leave your device");
+        Console.WriteLine("• There is no \"forgot password\" button — you are in complete control");
+        Console.WriteLine("• Metadata can be synced via any channel (USB, cloud, even paper)");
+        Console.WriteLine();
+
         Console.WriteLine("DESCRIPTION:");
-        Console.WriteLine("Deterministic password manager using SmartPasswordLib");
+        Console.WriteLine("Deterministic password manager using SmartPassLib");
         Console.WriteLine("Same secret + same length = same password across all platforms");
         Console.WriteLine();
 
         if (manager != null)
         {
-            Console.WriteLine($"STORAGE:");
+            Console.WriteLine("STORAGE:");
             Console.WriteLine($"Smart passwords: {manager.FilePath}");
         }
 
@@ -477,26 +485,47 @@ class Program
 
         Console.WriteLine();
         Console.WriteLine("HOW IT WORKS:");
-        Console.WriteLine("1. Add: provide secret phrase -> generates public key (stored)");
+        Console.WriteLine("1. Add: provide description + secret phrase -> generates public key (stored)");
         Console.WriteLine("2. Get: select smart password -> enter secret -> verifies via public key");
         Console.WriteLine("3. Password generated from private key (never stored)");
+        Console.WriteLine("4. Same secret + same length = identical password across all platforms");
         Console.WriteLine();
+
+        Console.WriteLine("SECURITY NOTES:");
+        Console.WriteLine("• Passwords are NEVER stored anywhere");
+        Console.WriteLine("• Secret phrase never leaves your device");
+        Console.WriteLine("• Only metadata (description, length, public key) is stored");
+        Console.WriteLine("• Lost secret phrase = permanently lost passwords");
+        Console.WriteLine("• Secret phrase must be at least 12 characters");
+        Console.WriteLine("⚠ Never use the description as your secret phrase!");
+        Console.WriteLine();
+
+        Console.WriteLine("CROSS-PLATFORM COMPATIBILITY:");
+        Console.WriteLine("Same secret + same length = identical passwords on:");
+        Console.WriteLine("• Python (Desktop, CLI)");
+        Console.WriteLine("• C# (Desktop, CLI)");
+        Console.WriteLine("• Web, Android, and all smartpasslib implementations");
+        Console.WriteLine();
+
         Console.WriteLine("COMMANDS:");
-        Console.WriteLine("  spm add <description> <length> <secret>");
-        Console.WriteLine("  spm list");
-        Console.WriteLine("  spm get <index>");
-        Console.WriteLine("  spm delete <index>");
-        Console.WriteLine("  spm export");
-        Console.WriteLine("  spm import <filepath>");
-        Console.WriteLine("  spm help");
+        Console.WriteLine("  SmartPasswordManagerCsharpCli add <description> <length> <secret>");
+        Console.WriteLine("  SmartPasswordManagerCsharpCli list");
+        Console.WriteLine("  SmartPasswordManagerCsharpCli get <index>");
+        Console.WriteLine("  SmartPasswordManagerCsharpCli delete <index>");
+        Console.WriteLine("  SmartPasswordManagerCsharpCli export");
+        Console.WriteLine("  SmartPasswordManagerCsharpCli import <filepath>");
+        Console.WriteLine("  SmartPasswordManagerCsharpCli help");
         Console.WriteLine();
+
         Console.WriteLine("EXPORT/IMPORT:");
         Console.WriteLine("Export saves all smart passwords to JSON file in SmartPasswordManager folder");
         Console.WriteLine("Import reads JSON file and adds new smart passwords (skips duplicates)");
         Console.WriteLine();
+
         Console.WriteLine("LINKS:");
         Console.WriteLine("Repo: https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli");
         Console.WriteLine("Core Lib: https://github.com/smartlegionlab/smartpasslib-csharp");
+        Console.WriteLine("Migration Guide: https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli/blob/master/MIGRATION.md");
         Console.WriteLine("License: BSD 3-Clause");
         Console.WriteLine("Author: Alexander Suvorov");
         Console.WriteLine();
@@ -511,7 +540,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v1.0.2");
+        CenterText($"Version: v1.0.3");
         CenterText($"Storage: {manager.FilePath}");
         CenterText($"Total smart passwords: {manager.PasswordCount}");
         Console.WriteLine(new string('=', width));
@@ -537,7 +566,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v1.0.2");
+        CenterText($"Version: v1.0.3");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
         CenterText("https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli");
