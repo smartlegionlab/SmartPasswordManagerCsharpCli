@@ -1,4 +1,4 @@
-# Smart Password Manager CLI (C#) <sup>v1.0.3</sup>
+# Smart Password Manager CLI (C#) <sup>v1.0.4</sup>
 
 ---
 
@@ -128,7 +128,7 @@ SmartPasswordManagerCsharpCli-win-x64.exe
 ```
 ================================================================================
                            SMART PASSWORD MANAGER CLI
-                                Version: v1.0.3
+                                Version: v1.0.4
      Storage: /home/user/.config/smart_password_manager/passwords.json
                             Total smart passwords: 0
 ================================================================================
