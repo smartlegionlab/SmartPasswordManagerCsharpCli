@@ -1,4 +1,4 @@
-# Smart Password Manager CLI (C#) <sup>v1.0.4</sup>
+# Smart Password Manager CLI (C#) <sup>v1.0.5</sup>
 
 ---
 
@@ -128,7 +128,7 @@ SmartPasswordManagerCsharpCli-win-x64.exe
 ```
 ================================================================================
                            SMART PASSWORD MANAGER CLI
-                                Version: v1.0.4
+                                Version: v1.0.5
      Storage: /home/user/.config/smart_password_manager/passwords.json
                             Total smart passwords: 0
 ================================================================================
@@ -250,7 +250,7 @@ dotnet build SmartPasswordManagerCsharpCli/
 dotnet publish -c Release -o ./publish-win -p:AssemblyName=SmartPasswordManagerCsharpCli-win-x64 -r win-x64 --self-contained true
 
 # Linux  
-dotnet publish -c Release -o ./publish-linux -p:AssemblyName=SmartPasswordManagerCsharpCli-linux-x64 -r linux-x64 --self-contained true
+dotnet publish -c Release -o ~/.publish-linux/SmartPasswordManagerCsharpCli/ -p:AssemblyName=SmartPasswordManagerCsharpCli-linux-x64 -r linux-x64 --self-contained true
 ```
 
 ## Ecosystem
@@ -292,4 +292,10 @@ Copyright (©) 2026, [Alexander Suvorov](https://github.com/smartlegionlab)
 
 - **Issues**: [GitHub Issues](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli/issues)
 - **Documentation**: This [README](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli/blob/master/README.md)
+
+---
+
+### Main Interface
+
+![Main Interface](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli/raw/master/data/images/logo.png)
 

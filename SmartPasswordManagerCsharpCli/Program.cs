@@ -315,7 +315,7 @@ class Program
             {
                 ["exported_at"] = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
                 ["app_name"] = "Smart Password Manager (C#) CLI",
-                ["app_version"] = "v1.0.4",
+                ["app_version"] = "v1.0.5",
                 ["app_type"] = "CLI",
                 ["lib_name"] = "smartpasslib-csharp",
                 ["lib_version"] = SmartPasswordGenerator.Version,
@@ -490,7 +490,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText("Version v1.0.4");
+        CenterText("Version v1.0.5");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
 
@@ -574,7 +574,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v1.0.4");
+        CenterText($"Version: v1.0.5");
         CenterText($"Storage: {manager.FilePath}");
         CenterText($"Total smart passwords: {manager.PasswordCount}");
         Console.WriteLine(new string('=', width));
@@ -600,7 +600,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v1.0.4");
+        CenterText($"Version: v1.0.5");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
         CenterText("https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli");
