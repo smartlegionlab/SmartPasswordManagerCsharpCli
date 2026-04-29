@@ -311,15 +311,26 @@ class Program
         {
             var exportData = new Dictionary<string, object>();
 
+            exportData["_metadata"] = new Dictionary<string, object>
+            {
+                ["exported_at"] = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
+                ["app_name"] = "Smart Password Manager (C#) CLI",
+                ["app_version"] = "v1.0.4",
+                ["app_type"] = "CLI",
+                ["lib_name"] = "smartpasslib-csharp",
+                ["lib_version"] = SmartPasswordGenerator.Version,
+                ["lib_lang"] = "C#",
+                ["count"] = manager.PasswordCount
+            };
+
             foreach (var sp in manager.Passwords)
             {
-                var spData = new Dictionary<string, object>
+                exportData[sp.Key] = new Dictionary<string, object>
                 {
                     ["public_key"] = sp.Value.PublicKey,
                     ["description"] = sp.Value.Description,
                     ["length"] = sp.Value.Length
                 };
-                exportData[sp.Key] = spData;
             }
 
             var options = new JsonSerializerOptions { WriteIndented = true };
@@ -367,19 +378,38 @@ class Program
                 return;
             }
 
+            if (data.ContainsKey("_metadata"))
+            {
+                var metadata = data["_metadata"];
+                Console.WriteLine("\nExport metadata:");
+                if (metadata.TryGetProperty("exported_at", out var dateProp))
+                    Console.WriteLine($"  Date: {dateProp.GetString()}");
+                if (metadata.TryGetProperty("app_name", out var appNameProp))
+                    Console.WriteLine($"  App: {appNameProp.GetString()}");
+                if (metadata.TryGetProperty("app_version", out var appVerProp))
+                    Console.WriteLine($"  Version: {appVerProp.GetString()}");
+                if (metadata.TryGetProperty("count", out var countProp))
+                    Console.WriteLine($"  Passwords in file: {countProp.GetInt32()}");
+
+                data.Remove("_metadata");
+            }
+
             int imported = 0;
             int skipped = 0;
+            int total = data.Count;
+
+            Console.WriteLine($"\nFound {total} password entries in file");
 
             foreach (var kv in data)
             {
-                if (kv.Key.StartsWith("_"))
-                {
-                    skipped++;
-                    continue;
-                }
-
                 try
                 {
+                    if (kv.Key.StartsWith("_"))
+                    {
+                        skipped++;
+                        continue;
+                    }
+
                     string? publicKey = null;
                     string? description = null;
                     int length = 12;
@@ -415,9 +445,13 @@ class Program
                 }
             }
 
-            Console.WriteLine($"Import completed!");
-            Console.WriteLine($"Imported: {imported}");
-            Console.WriteLine($"Skipped: {skipped}");
+            Console.WriteLine($"\nImport completed!");
+            Console.WriteLine($"  • Added: {imported} new passwords");
+            Console.WriteLine($"  • Skipped (duplicates/invalid): {skipped}");
+        }
+        catch (JsonException)
+        {
+            Console.WriteLine("ERROR: Invalid JSON file format");
         }
         catch (Exception ex)
         {
