@@ -150,9 +150,9 @@ class Program
             return;
         }
 
-        if (!int.TryParse(lengthStr, out int length) || length < 12 || length > 1000)
+        if (!int.TryParse(lengthStr, out int length) || length < 12 || length > 100)
         {
-            Console.WriteLine("ERROR: Length must be between 12 and 1000");
+            Console.WriteLine("ERROR: Length must be between 12 and 100");
             return;
         }
 
@@ -315,7 +315,7 @@ class Program
             {
                 ["exported_at"] = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
                 ["app_name"] = "Smart Password Manager (C#) CLI",
-                ["app_version"] = "v1.0.5",
+                ["app_version"] = "v4.0.0",
                 ["app_type"] = "CLI",
                 ["lib_name"] = "smartpasslib-csharp",
                 ["lib_version"] = SmartPasswordGenerator.Version,
@@ -490,7 +490,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText("Version v1.0.5");
+        CenterText("Version v4.0.0");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
 
@@ -574,7 +574,6 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v1.0.5");
         CenterText($"Storage: {manager.FilePath}");
         CenterText($"Total smart passwords: {manager.PasswordCount}");
         Console.WriteLine(new string('=', width));
@@ -600,7 +599,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v1.0.5");
+        CenterText($"Version: v4.0.0");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
         CenterText("https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli");
@@ -636,7 +635,7 @@ class Program
             return;
         }
 
-        Console.Write(" Enter password length (12-1000): ");
+        Console.Write(" Enter password length (12-100): ");
         string? lengthInput = Console.ReadLine();
 
         if (string.IsNullOrWhiteSpace(lengthInput))
@@ -646,9 +645,9 @@ class Program
             return;
         }
 
-        if (!int.TryParse(lengthInput, out int length) || length < 12 || length > 1000)
+        if (!int.TryParse(lengthInput, out int length) || length < 12 || length > 100)
         {
-            Console.WriteLine("\nERROR: Length must be between 12 and 1000!");
+            Console.WriteLine("\nERROR: Length must be between 12 and 100!");
             Console.ReadKey();
             return;
         }
