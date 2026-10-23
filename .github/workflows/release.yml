@@ -1,0 +1,64 @@
+name: Release Binaries
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: smart-password-manager-windows-x64
+            binary: SmartPasswordManagerCsharpCli.exe
+          - os: ubuntu-latest
+            artifact: smart-password-manager-linux-x64
+            binary: SmartPasswordManagerCsharpCli
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Publish
+        run: dotnet publish SmartPasswordManagerCsharpCli/SmartPasswordManagerCsharpCli.csproj -c Release -r ${{ matrix.os == 'windows-latest' && 'win-x64' || 'linux-x64' }} --self-contained true -p:PublishSingleFile=true -o publish
+
+      - name: Rename binary (Unix)
+        if: matrix.os != 'windows-latest'
+        shell: bash
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          cp publish/${{ matrix.binary }} "${{ matrix.artifact }}-${VERSION}"
+
+      - name: Rename binary (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          cp publish/${{ matrix.binary }} "${{ matrix.artifact }}-${VERSION}.exe"
+
+      - name: Upload binary to release (Unix)
+        if: matrix.os != 'windows-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.artifact }}-${{ github.event.release.tag_name }}
+
+      - name: Upload binary to release (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.artifact }}-${{ github.event.release.tag_name }}.exe

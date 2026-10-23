@@ -39,7 +39,7 @@ class Program
             case "add":
                 if (args.Length < 4)
                 {
-                    Console.WriteLine("ERROR: Usage: SmartPasswordManagerCsharpCli add <description> <length> <secret>");
+                    Console.WriteLine("ERROR: Usage: smart-password-manager add <description> <length> <secret>");
                     return;
                 }
                 AddPassword(args[1] ?? string.Empty, args[2] ?? string.Empty, args[3] ?? string.Empty);
@@ -50,7 +50,7 @@ class Program
             case "get":
                 if (args.Length < 2)
                 {
-                    Console.WriteLine("ERROR: Usage: SmartPasswordManagerCsharpCli get <index>");
+                    Console.WriteLine("ERROR: Usage: smart-password-manager get <index>");
                     return;
                 }
                 GetPassword(args[1] ?? string.Empty);
@@ -58,7 +58,7 @@ class Program
             case "delete":
                 if (args.Length < 2)
                 {
-                    Console.WriteLine("ERROR: Usage: SmartPasswordManagerCsharpCli delete <index>");
+                    Console.WriteLine("ERROR: Usage: smart-password-manager delete <index>");
                     return;
                 }
                 DeletePassword(args[1] ?? string.Empty);
@@ -69,7 +69,7 @@ class Program
             case "import":
                 if (args.Length < 2)
                 {
-                    Console.WriteLine("ERROR: Usage: SmartPasswordManagerCsharpCli import <filepath>");
+                    Console.WriteLine("ERROR: Usage: smart-password-manager import <filepath>");
                     return;
                 }
                 ImportFromFile(args[1] ?? string.Empty);
@@ -315,7 +315,7 @@ class Program
             {
                 ["exported_at"] = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
                 ["app_name"] = "Smart Password Manager (C#) CLI",
-                ["app_version"] = "v4.0.0",
+                ["app_version"] = "v4.0.1",
                 ["app_type"] = "CLI",
                 ["lib_name"] = "smartpasslib-csharp",
                 ["lib_version"] = SmartPasswordGenerator.Version,
@@ -490,7 +490,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText("Version v4.0.0");
+        CenterText("Version v4.0.1");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
 
@@ -542,13 +542,13 @@ class Program
         Console.WriteLine();
 
         Console.WriteLine("COMMANDS:");
-        Console.WriteLine("  SmartPasswordManagerCsharpCli add <description> <length> <secret>");
-        Console.WriteLine("  SmartPasswordManagerCsharpCli list");
-        Console.WriteLine("  SmartPasswordManagerCsharpCli get <index>");
-        Console.WriteLine("  SmartPasswordManagerCsharpCli delete <index>");
-        Console.WriteLine("  SmartPasswordManagerCsharpCli export");
-        Console.WriteLine("  SmartPasswordManagerCsharpCli import <filepath>");
-        Console.WriteLine("  SmartPasswordManagerCsharpCli help");
+        Console.WriteLine("  smart-password-manager add <description> <length> <secret>");
+        Console.WriteLine("  smart-password-manager list");
+        Console.WriteLine("  smart-password-manager get <index>");
+        Console.WriteLine("  smart-password-manager delete <index>");
+        Console.WriteLine("  smart-password-manager export");
+        Console.WriteLine("  smart-password-manager import <filepath>");
+        Console.WriteLine("  smart-password-manager help");
         Console.WriteLine();
 
         Console.WriteLine("EXPORT/IMPORT:");
@@ -559,7 +559,6 @@ class Program
         Console.WriteLine("LINKS:");
         Console.WriteLine("Repo: https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli");
         Console.WriteLine("Core Lib: https://github.com/smartlegionlab/smartpasslib-csharp");
-        Console.WriteLine("Migration Guide: https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli/blob/master/MIGRATION.md");
         Console.WriteLine("License: BSD 3-Clause");
         Console.WriteLine("Author: Alexander Suvorov");
         Console.WriteLine();
@@ -599,7 +598,7 @@ class Program
         int width = Console.WindowWidth;
         Console.WriteLine(new string('=', width));
         CenterText("SMART PASSWORD MANAGER CLI");
-        CenterText($"Version: v4.0.0");
+        CenterText($"Version: v4.0.1");
         Console.WriteLine(new string('=', width));
         Console.WriteLine();
         CenterText("https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli");
